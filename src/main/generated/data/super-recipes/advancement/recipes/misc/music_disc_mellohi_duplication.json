@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:music_disc_mellohi_duplication"
+        "recipe": "super-recipes:music_disc_mellohi_duplication"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:music_disc_mellohi_duplication"
+      "super-recipes:music_disc_mellohi_duplication"
     ]
   }
 }

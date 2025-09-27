@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class PhantomBugFix extends PlayerEntity {
-    public PhantomBugFix(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
-        super(world, pos, yaw, gameProfile);
+    public PhantomBugFix(World world, GameProfile gameProfile) {
+        super(world, gameProfile);
     }
 
     @Override

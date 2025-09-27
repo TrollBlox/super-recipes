@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_music_disc_wait": {
+    "has_music_disc_tears": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:music_disc_wait"
+            "items": "minecraft:music_disc_tears"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "super-recipes:music_disc_wait_duplication"
+        "recipe": "super-recipes:music_disc_tears_duplication"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_music_disc_wait"
+      "has_music_disc_tears"
     ]
   ],
   "rewards": {
     "recipes": [
-      "super-recipes:music_disc_wait_duplication"
+      "super-recipes:music_disc_tears_duplication"
     ]
   }
 }

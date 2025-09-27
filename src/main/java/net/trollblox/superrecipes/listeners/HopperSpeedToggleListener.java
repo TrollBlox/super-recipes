@@ -25,7 +25,7 @@ public class HopperSpeedToggleListener {
             blockEntity.super_recipes_1_21$setHopperSpeed(HopperSpeed.getHopperSpeedFromValueInverse(blockEntity.super_recipes_1_21$getHopperSpeed().getValue()));
             String text = "Set hopper at (X: " + blockPosition.getX() + " Y: " + blockPosition.getY() + " Z: " + blockPosition.getZ() + ") to " + (blockEntity.super_recipes_1_21$getHopperSpeed().getValue() ? "slow" : "fast") + ".";
             player.sendMessage(Text.of(text), true);
-            SuperRecipes.LOGGER.info("{} {}", player.getName().toString(), text.replace('S', 's'));
+            SuperRecipes.LOGGER.info("{} {}", player.getName(), text.replace('S', 's'));
             return ActionResult.FAIL;
         });
     }

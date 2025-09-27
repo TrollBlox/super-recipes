@@ -1,8 +1,8 @@
 package net.trollblox.superrecipes.mixin;
 
 import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.trollblox.superrecipes.Constants;
 import net.trollblox.superrecipes.HopperSpeedData;
 import net.trollblox.superrecipes.config.SuperConfigs;
@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Optional;
 
 @Mixin(HopperBlockEntity.class)
 public class HopperSpeedMixin implements HopperSpeedData {
@@ -31,7 +29,7 @@ public class HopperSpeedMixin implements HopperSpeedData {
 
     @Unique
     public HopperSpeed super_recipes_1_21$getHopperSpeed() {
-        return (hopperSpeed == null ? HopperSpeed.MODDED : hopperSpeed);
+        return (hopperSpeed == null ? HopperSpeed.VANILLA : hopperSpeed);
     }
 
     @Inject(at = @At("TAIL"), method = "setTransferCooldown")
@@ -40,29 +38,16 @@ public class HopperSpeedMixin implements HopperSpeedData {
         this.transferCooldown = transferCooldown - (8 - SuperConfigs.HOPPER_TICK_DELAY);
     }
 
-    @Inject(at = @At("TAIL"), method = "writeNbt")
-    private void overrideWriteNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup, CallbackInfo info) {
-        nbt.putBoolean(Constants.HOPPER_SPEED_NBT_ID, hopperSpeed == HopperSpeed.MODDED);
+    @Inject(at = @At("TAIL"), method = "writeData")
+    private void writeData(WriteView view, CallbackInfo info) {
+        view.putBoolean(Constants.HOPPER_SPEED_DATA_ID, hopperSpeed == HopperSpeed.MODDED);
     }
 
-    @Inject(at = @At("TAIL"), method = "readNbt")
-    private void overrideReadNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup, CallbackInfo info) {
-        // Check old key value in nbt and remove it
-        Optional<Boolean> hopperSpeedNbtOld = nbt.getBoolean(Constants.HOPPER_SPEED_NBT_ID_OLD);
-        Optional<Boolean> hopperSpeedNbt = nbt.getBoolean(Constants.HOPPER_SPEED_NBT_ID);
+    @Inject(at = @At("TAIL"), method = "readData")
+    private void readData(ReadView view, CallbackInfo info) {
+        boolean hopperSpeedData = view.getBoolean(Constants.HOPPER_SPEED_DATA_ID, HopperSpeed.VANILLA.getValue());
 
-        if (hopperSpeedNbtOld.isPresent()) {
-            hopperSpeed = HopperSpeed.getHopperSpeedFromValue(hopperSpeedNbtOld.get());
-            nbt.remove(Constants.HOPPER_SPEED_NBT_ID_OLD);
-            return;
-        }
-        if (hopperSpeedNbt.isPresent()) {
-            hopperSpeed = HopperSpeed.getHopperSpeedFromValue(hopperSpeedNbt.get());
-            return;
-        }
-
-        hopperSpeed = HopperSpeed.MODDED;
-
+        hopperSpeed = HopperSpeed.getHopperSpeedFromValue(hopperSpeedData);
     }
 
 }
