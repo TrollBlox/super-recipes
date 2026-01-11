@@ -32,17 +32,18 @@ public abstract class TridentWeatherMixin extends Entity {
 
     @Unique
     private void changeWeather(boolean block) {
+        World world = this.getEntityWorld();
         if (dealtDamage) return;
         if (!SuperConfigs.CHANNELING_AFFECTS_WEATHER) return;
         if (itemStack == null) return;
-        if (!itemStack.getEnchantments().getEnchantments().contains(this.getWorld().getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOptional(Enchantments.CHANNELING).orElse(null))) return;
-        if (!this.getWorld().isClient) {
-            MinecraftServer server = this.getServer();
+        if (!itemStack.getEnchantments().getEnchantments().contains(world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOptional(Enchantments.CHANNELING).orElse(null))) return;
+        if (!world.isClient()) {
+            MinecraftServer server = world.getServer();
             if (server == null) return;
             ServerWorld overworld = server.getOverworld();
             ServerWorldProperties properties = ((WorldPropertiesAccessor) overworld).getWorldProperties();
             Entity bolt = new LightningEntity(EntityType.LIGHTNING_BOLT, overworld);
-            bolt.setPosition(this.getPos());
+            bolt.setPosition(this.getSyncedPos());
             boolean thundering = properties.isThundering();
             if (block || !thundering) {
                 overworld.spawnEntity(bolt);

@@ -23,7 +23,7 @@ public abstract class ItemDispenserBehaviorMixin {
 	@Inject(at = @At("HEAD"), method = "dispenseSilently", cancellable = true)
 	public void cauldronMixin(BlockPointer pointer, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
         World world = pointer.world();
-        if (world.isClient) {
+        if (world.isClient()) {
             return;
         }
 

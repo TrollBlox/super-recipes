@@ -5,6 +5,7 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.trollblox.superrecipes.Constants;
 import net.trollblox.superrecipes.HopperSpeedData;
+import net.trollblox.superrecipes.SuperRecipes;
 import net.trollblox.superrecipes.config.SuperConfigs;
 import net.trollblox.superrecipes.enums.HopperSpeed;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +14,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.logging.Logger;
 
 @Mixin(HopperBlockEntity.class)
 public class HopperSpeedMixin implements HopperSpeedData {
@@ -29,12 +32,12 @@ public class HopperSpeedMixin implements HopperSpeedData {
 
     @Unique
     public HopperSpeed super_recipes_1_21$getHopperSpeed() {
-        return (hopperSpeed == null ? HopperSpeed.VANILLA : hopperSpeed);
+        return (hopperSpeed == null ? HopperSpeed.MODDED : hopperSpeed);
     }
 
     @Inject(at = @At("TAIL"), method = "setTransferCooldown")
     private void overrideNeedsCooldown(int transferCooldown, CallbackInfo info) {
-        if (hopperSpeed == HopperSpeed.VANILLA) return;
+        if (super_recipes_1_21$getHopperSpeed() == HopperSpeed.VANILLA) return;
         this.transferCooldown = transferCooldown - (8 - SuperConfigs.HOPPER_TICK_DELAY);
     }
 

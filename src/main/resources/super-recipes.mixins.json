@@ -8,8 +8,6 @@
     "HopperSpeedToggleMixin",
     "ItemDispenserBehaviorMixin",
     "MusicDiscRemainderMixin",
-    "PhantomBugFix",
-    "SaturationStatusEffectMixin",
     "TridentWeatherMixin",
     "WorldPropertiesAccessor"
   ],
