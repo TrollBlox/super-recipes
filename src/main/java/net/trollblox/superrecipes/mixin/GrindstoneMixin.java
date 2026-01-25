@@ -165,4 +165,42 @@ public abstract class GrindstoneMixin extends ScreenHandler {
             info.setReturnValue(new ItemStack(Items.GOLDEN_APPLE, Math.min(count, Items.GOLDEN_APPLE.getMaxCount())));
         }
     }
+
+    @Inject(at = @At("HEAD"), method = "quickMove", cancellable = true)
+    private void overrideQuickMove(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> info) {
+        ItemStack input1 = this.slots.get(0).getStack();
+        ItemStack input2 = this.slots.get(1).getStack();
+        Slot slotObject = this.slots.get(slot);
+        ItemStack slotStack = slotObject.getStack();
+        ItemStack originalSlotStack = slotStack.copy();
+        if (slotStack.isOf(Items.GOLDEN_APPLE) || slotStack.isOf(Items.ENCHANTED_GOLDEN_APPLE)) {
+            if (slot == 2) {
+                if (!this.insertItem(new ItemStack(Items.GOLDEN_APPLE, input1.getCount() + input2.getCount()), 3, 39, true)) {
+                    info.setReturnValue(ItemStack.EMPTY);
+                }
+                slotObject.onQuickTransfer(slotStack, originalSlotStack);
+            } else if (slot > 2) {
+                if (!this.insertItem(slotStack, 0, 2, false)) {
+                    info.setReturnValue(ItemStack.EMPTY);
+                }
+            } else {
+                if (!this.insertItem(slotStack, 3, 39, false)) {
+                    info.setReturnValue(ItemStack.EMPTY);
+                }
+            }
+
+
+            if (slotStack.isEmpty()) {
+                slotObject.setStack(ItemStack.EMPTY);
+            } else {
+                slotObject.markDirty();
+            }
+
+            if (slotStack.getCount() == originalSlotStack.getCount()) {
+                info.setReturnValue(ItemStack.EMPTY);
+            }
+
+            slotObject.onTakeItem(player, slotStack);
+        }
+    }
 }
