@@ -9,7 +9,8 @@
     "ItemDispenserBehaviorMixin",
     "MusicDiscRemainderMixin",
     "TridentWeatherMixin",
-    "WorldPropertiesAccessor"
+    "WorldPropertiesAccessor",
+    "GrindstoneMixin"
   ],
   "injectors": {
     "defaultRequire": 1

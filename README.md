@@ -9,3 +9,4 @@
 - Added three new beacon effects that are configurable (default: Health Boost II, Night Vision I, Fire Resistance I)
 - Dispensers interact with cauldrons (water bucket, lava bucket, powdered snow bucket, and empty bucket all work)
 - Channelling Tridents cause thunderstorms to start
+- Enchanted Golden Apples are usable at a grindstone, with a custom amount of experience given for each (default: 1)

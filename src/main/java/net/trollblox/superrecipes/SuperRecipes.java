@@ -1,6 +1,10 @@
 package net.trollblox.superrecipes;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.client.gui.screen.advancement.AdvancementsScreen;
+import net.minecraft.screen.GrindstoneScreenHandler;
 import net.trollblox.superrecipes.config.SuperConfigs;
 import net.trollblox.superrecipes.util.SuperLootTableModifiers;
 import org.slf4j.Logger;

@@ -15,6 +15,7 @@ public class SuperConfigs {
     public static String LEVEL_THREE_BEACON_EFFECT;
     public static String LEVEL_FOUR_BEACON_EFFECT_0;
     public static String LEVEL_FOUR_BEACON_EFFECT_1;
+    public static int XP_FROM_ENCHANTED_GOLDEN_APPLE;
 
     public static void registerConfigs() {
         configs = new SuperConfigProvider();
@@ -33,6 +34,7 @@ public class SuperConfigs {
         configs.addKeyValuePair(new Pair<>("level-three-beacon-effect", "health_boost"), "Custom level three beacon effect");
         configs.addKeyValuePair(new Pair<>("level-four-beacon-effect-0", "night_vision"), "Custom level four beacon effect");
         configs.addKeyValuePair(new Pair<>("level-four-beacon-effect-1", "fire_resistance"), "Custom level four beacon effect");
+        configs.addKeyValuePair(new Pair<>("xp-from-enchanted-golden-apple", 1), "XP given per enchanted golden apple grinded");
     }
 
     private static void assignConfigs() {
@@ -47,8 +49,10 @@ public class SuperConfigs {
         LEVEL_THREE_BEACON_EFFECT = CONFIG.getOrDefault("level-three-beacon-effect", "health_boost");
         SuperRecipes.LOGGER.info("Assigned LEVEL_THREE_BEACON_EFFECT to {}", LEVEL_THREE_BEACON_EFFECT);
         LEVEL_FOUR_BEACON_EFFECT_0 = CONFIG.getOrDefault("level-four-beacon-effect-0", "night_vision");
-        SuperRecipes.LOGGER.info("Assigned LEVEL_FOUR_BEACON_EFFECT to {}", LEVEL_FOUR_BEACON_EFFECT_0);
+        SuperRecipes.LOGGER.info("Assigned LEVEL_FOUR_BEACON_EFFECT_0 to {}", LEVEL_FOUR_BEACON_EFFECT_0);
         LEVEL_FOUR_BEACON_EFFECT_1 = CONFIG.getOrDefault("level-four-beacon-effect-1", "fire_resistance");
-        SuperRecipes.LOGGER.info("Assigned LEVEL_FOUR_BEACON_EFFECT to {}", LEVEL_FOUR_BEACON_EFFECT_1);
+        SuperRecipes.LOGGER.info("Assigned LEVEL_FOUR_BEACON_EFFECT_1 to {}", LEVEL_FOUR_BEACON_EFFECT_1);
+        XP_FROM_ENCHANTED_GOLDEN_APPLE = CONFIG.getOrDefault("xp-from-enchanted-golden-apple", 1);
+        SuperRecipes.LOGGER.info("Assigned XP_FROM_ENCHANTED_GOLDEN_APPLE to {}", XP_FROM_ENCHANTED_GOLDEN_APPLE);
     }
 }
