@@ -1,11 +1,11 @@
 package net.trollblox.superrecipes;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.state.property.Properties;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class DispenserCauldronHelper {
             put(Items.LAVA_BUCKET, new HashMap<>() {
                 {
                     put("block", Blocks.LAVA_CAULDRON);
-                    put("block_state", Blocks.LAVA_CAULDRON.getDefaultState());
+                    put("block_state", Blocks.LAVA_CAULDRON.defaultBlockState());
                     put("has_levels", false);
                 }
             });
@@ -23,7 +23,7 @@ public class DispenserCauldronHelper {
             put(Items.WATER_BUCKET, new HashMap<>() {
                 {
                     put("block", Blocks.WATER_CAULDRON);
-                    put("block_state", Blocks.WATER_CAULDRON.getDefaultState().with(Properties.LEVEL_3, 3));
+                    put("block_state", Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 3));
                     put("has_levels", true);
                 }
             });
@@ -31,7 +31,7 @@ public class DispenserCauldronHelper {
             put(Items.POWDER_SNOW_BUCKET, new HashMap<>() {
                 {
                     put("block", Blocks.POWDER_SNOW_CAULDRON);
-                    put("block_state", Blocks.POWDER_SNOW_CAULDRON.getDefaultState().with(Properties.LEVEL_3, 3));
+                    put("block_state", Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 3));
                     put("has_levels", true);
                 }
             });
@@ -67,7 +67,7 @@ public class DispenserCauldronHelper {
         HashMap<String, Object> cauldron = BucketToCauldron.get(CauldronToBucket.get(block));
         if (!((Boolean) cauldron.get("has_levels"))) { return CauldronLevel.FULL; }
 
-        return switch (block_state.get(Properties.LEVEL_3)) {
+        return switch (block_state.getValue(BlockStateProperties.LEVEL_CAULDRON)) {
             case 3 -> CauldronLevel.FULL;
             case 2 -> CauldronLevel.MEDIUM;
             case 1 -> CauldronLevel.LOW;

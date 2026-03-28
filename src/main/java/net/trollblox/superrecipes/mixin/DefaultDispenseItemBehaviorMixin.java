@@ -1,15 +1,19 @@
 package net.trollblox.superrecipes.mixin;
 
-import net.minecraft.block.*;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.world.level.block.AbstractCauldronBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.trollblox.superrecipes.DispenserCauldronHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -17,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ItemDispenserBehavior.class)
-public abstract class ItemDispenserBehaviorMixin {
+@Mixin(DefaultDispenseItemBehavior.class)
+public abstract class DefaultDispenseItemBehaviorMixin {
 
-	@Inject(at = @At("HEAD"), method = "dispenseSilently", cancellable = true)
-	public void cauldronMixin(BlockPointer pointer, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
-        World world = pointer.world();
-        if (world.isClient()) {
+	@Inject(at = @At("HEAD"), method = "execute", cancellable = true)
+	public void cauldronMixin(BlockSource pointer, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
+        Level world = pointer.level();
+        if (world.isClientSide()) {
             return;
         }
 
@@ -32,7 +36,7 @@ public abstract class ItemDispenserBehaviorMixin {
         }
 
         DispenserBlockEntity dispenser = pointer.blockEntity();
-        BlockPos pos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+        BlockPos pos = pointer.pos().relative(pointer.state().getValue(DispenserBlock.FACING));
         BlockState block_state = world.getBlockState(pos);
         Block block = block_state.getBlock();
         Item item = stack.getItem();
@@ -47,7 +51,7 @@ public abstract class ItemDispenserBehaviorMixin {
                 return;
             }
 
-            world.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
+            world.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
             ItemStack bucket = new ItemStack(DispenserCauldronHelper.CauldronToBucket.getOrDefault(block_state.getBlock(), Items.AIR));
 
             if (handleDispense(stack, bucket, dispenser, cir)) {
@@ -57,18 +61,18 @@ public abstract class ItemDispenserBehaviorMixin {
         // Fills a cauldron with the bucket contents regardless of cauldron type and level (Vanilla Mechanic)
         } else if (DispenserCauldronHelper.BucketToCauldron.containsKey(item)) {
             cir.setReturnValue(new ItemStack(Items.BUCKET));
-            world.setBlockState(pos, (BlockState) DispenserCauldronHelper.BucketToCauldron.get(item).get("block_state"));
+            world.setBlockAndUpdate(pos, (BlockState) DispenserCauldronHelper.BucketToCauldron.get(item).get("block_state"));
         }
     }
 
     @Unique
     public boolean handleDispense(ItemStack stack, ItemStack stack2, DispenserBlockEntity dispenser, CallbackInfoReturnable<ItemStack> cir) {
-        stack.decrement(1);
+        stack.shrink(1);
         if (stack.isEmpty()) {
             cir.setReturnValue(stack2);
 
         } else {
-            dispenser.addToFirstFreeSlot(stack2);
+            dispenser.insertItem(stack2);
             cir.setReturnValue(stack);
             return true;
         }
@@ -77,8 +81,8 @@ public abstract class ItemDispenserBehaviorMixin {
     }
 
     @Unique
-    public void customDispenseSilently(BlockPointer pointer, ItemStack stack) {
-        BlockPos block_pos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+    public void customDispenseSilently(BlockSource pointer, ItemStack stack) {
+        BlockPos block_pos = pointer.pos().relative(pointer.state().getValue(DispenserBlock.FACING));
         BlockPos dispenser_pos = pointer.pos();
 
         double velocity_x = block_pos.getX() - dispenser_pos.getX();
@@ -93,8 +97,8 @@ public abstract class ItemDispenserBehaviorMixin {
         if (velocity_y != 0) { velocity_y /= 1.5; offset_y = 0.2; }
         if (velocity_z != 0) { velocity_z /= 1.5; offset_z = 0.2; }
         
-        World world = pointer.world();
+        Level world = pointer.level();
         ItemEntity entity = new ItemEntity(world, pointer.pos().getX() + offset_x, pointer.pos().getY() + offset_y, pointer.pos().getZ() + offset_z, stack, velocity_x, velocity_y, velocity_z);
-        world.spawnEntity(entity);
+        world.addFreshEntity(entity);
     }
 }
